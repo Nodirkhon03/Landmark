@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import Map from "./map/map";
+import NotesList from "./map/NoteList";
 
 function App() {
+  const [currentLocation, setCurrentLocation] = useState({ lat: 0, lng: 0 });
+  const [notes] = useState([]);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCurrentLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      },
+      () => {
+        alert("Could not fetch your location!");
+      }
+    );
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div>
+      <header className="app-header">
+        <h1>My Community Landmark</h1>
+        <p>Share and discover notes about places in your community!</p>
       </header>
+      <Map currentLocation={currentLocation} notes={notes} />
+      <NotesList notes={notes} />
     </div>
   );
 }
